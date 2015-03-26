@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Ex
+set -E
 
 # Get path to git and check if it's available
 GIT=$(which git)
