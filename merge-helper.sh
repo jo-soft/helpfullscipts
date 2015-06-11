@@ -10,7 +10,7 @@ fi
 
 if [ $# -ge 3 ]; then
   echo "Usage $0 [--rebase] [targetname]"
-  ecgi  "use --rebase for a rebase instead of a merge"
+  echo  "use --rebase for a rebase instead of a merge"
   echo "if no targetname is given 'develop' is used."
   exit 1
 fi
@@ -50,3 +50,4 @@ if [ -n "$REBASE" ] && [ "$REBASE" -eq "1" ]; then
   $GIT rebase $CURRENT_BRANCH
 else
   $GIT pull
+  $GIT merge $CURRENT_BRANCH
