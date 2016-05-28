@@ -68,7 +68,7 @@ function debug {
 function setup {
     # TODO: secrure config, avoid bash code to be executed in config file
     if [ -r $GLOBAL_CONFIG_FILE ]; then
-	source $GLOBAL_CONFIG_
+	source $GLOBAL_CONFIG_FILE
 	CONFIG_FOUND=1
 	debug "Config loaded from $GLOBAL_CONFIG_FILE"
     fi
