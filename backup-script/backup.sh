@@ -26,7 +26,7 @@ if [ -z $RSYNC ]; then
     echo cannot find rsync
     exit 1
 fi
-DEFAULT_RSYNC_OPTS="-a"
+DEFAULT_RSYNC_OPTS="-aAXz --numeric-ids"
 LOGGER=$(which logger)
 if [ -z $LOGGER ]; then
     echo cannot find logger
