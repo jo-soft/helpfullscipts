@@ -10,7 +10,7 @@ Starting the backup is delayed until two conditions are met:
 
 ## Config 
 
-jo-backup looks for the configuration in _/etc/jo-backup.conf_ and _~/.jo-backup.conf_
+jo-backup looks for a config file in _/etc/jo-backup.conf_ and _~/.jo-backup.conf_.
 Values from the global configuration can be overwritten with the local file.
 
 ### Example 
