@@ -85,7 +85,6 @@ function setup {
 }
 
 function  get_cpu_usage_below_threashold {
-    THREASHOLD=$1
     # Get the current CPU usage
     USAGE=$($MPSTAT 1 1 | $AWK '(/^[^a-zA-Z]+/) &&  ($12 ~  /[0-9,]+/) {print int(100 - $12)}')
     debug "CPU usage: $USAGE, threshold: $THREASHOLD"
@@ -116,7 +115,9 @@ function wait_for_cpu_usage_and_ac {
 }
 
 function backup {
+    debug "starting backup of $SRC to $DST"
     $RSYNC $DEFAULT_RSYNC_OPTS $RSYNC_OPTS  $SRC $DST
+    debug "backup finished"
 }
 
 function main {   
