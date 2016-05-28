@@ -1,0 +1,12 @@
+THREASHOLD=20
+VERBOSE=0
+
+# rsync options
+#
+# source and destination are passed as last and before last parameter to rsny
+# this means all sources and destinatoins which are allowed for rsync are as values
+
+SRC="/home/johannes/"
+DST="odroid@192.168.2.11:/mnt/backup/"
+
+RSYNC_OPTS="-vc --exclude .cache --exclude [Cc]ache*/  --exclude *~ --exclude *.bak --exclude *.backup*  --exclude Temp/ --exclude temp/ --exclude  tmp/"
