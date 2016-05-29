@@ -1,5 +1,17 @@
 #!/bin/bash
 
+RM=$(which rm)
+if [ -z $RM ]; then
+    echo usually this should never happen, but rm was not found.
+    exit 1
+fi
+LOCKFILE=$(which lockfile)
+if [ -z $LOCKFILE ]; then
+    echo cannot find lockfile
+    exit 1
+fi
+LOCK_FILE_NAME="/tmp/jo-backup.lock"
+
 ACPI=$(which acpi)
 if [ -z $ACPI ]; then
     echo cannot find acpi
@@ -65,7 +77,15 @@ function debug {
     fi
 }
 
+function cleanUp {  
+    $RM -f $LOCK_FILE_NAME
+    debug "Lockfile $LOCK_FILE_NAME removed. exiting."
+}
+
 function setup {
+    $LOCKFILE -r 0 $LOCK_FILE_NAME || exit 1
+    # add trap after lockfile because otherwise it will also be called when aquirering the lock fails
+    trap cleanUp EXIT
     # TODO: secrure config, avoid bash code to be executed in config file
     if [ -r $GLOBAL_CONFIG_FILE ]; then
 	source $GLOBAL_CONFIG_FILE
