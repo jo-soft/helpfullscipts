@@ -1,5 +1,13 @@
 #!/bin/bash
 
+PRG=$0
+
+DATE=$(which date)
+if [ -z $DATE ]; then
+    echo usually this should never happen, but date was not
+    exit 1
+fi
+
 RM=$(which rm)
 if [ -z $RM ]; then
     echo usually this should never happen, but rm was not found.
@@ -39,10 +47,13 @@ if [ -z $RSYNC ]; then
     exit 1
 fi
 DEFAULT_RSYNC_OPTS="-aAXz --numeric-ids"
+
 LOGGER=$(which logger)
 if [ -z $LOGGER ]; then
     echo cannot find logger
     echo all error messages will be print to stderr
+else
+    LOGGER_OPTS=" -t $PRG"
 fi
 
 CONFIG_FILE="jo-backup.conf"
@@ -55,25 +66,40 @@ function error_handler {
 	MESSAGE="something went wrong."
     fi
     if [ -n $LOGGER ] ; then
-	$LOGGER -s -t ERROR  $MESSAGE
+	$LOGGER $LOGGER_OPTS -s  "ERROR: $MESSAGE"
     else
-	>&2 echo $MESSAGE
+	MSGDATE=$($DATE +"%d-%m-%Y")
+	>&2 echo $MSGDATE ERROR: $MESSAGE
     fi
 }
 
-function warn_handler {
+function warn {
     MESSAGE=$1
     if [ -n $LOGGER ]; then
-	$LOGGER -t WARN $MESSAGE
+	$LOGGER $LOGGER_OPTS "WARNING: $MESSAGE"
     elif [ -z $LOGGER ] || [ $VERBOSE -ge 1]; then
-	>&2 echo $MESSAGE	
+	MSGDATE=$($DATE +"%d-%m-%Y")
+	>&2 echo $MSGDATE WARNING: $MESSAGE
+    fi
+}
+
+function info {
+    MESSAGE=$1
+    if [ -n $LOGGER ] ; then
+	$LOGGER $LOGGER_OPTS "INFO: $MESSAGE"
+    fi
+    if [ $VERBOSE -ge 1 ]; then
+	MSGDATE=$($DATE +"%d-%m-%")
+	echo $MSGDATE INFO: $MESSAGE
     fi
 }
 
 function debug {
     MESSAGE=$1
     if [ $VERBOSE -ge 2 ]; then
-	echo $MESSAGE
+	MSGDATE=$($DATE +"%d-%m-%Y")
+	echo "$MSGDATE DEBUG: $MESSAGE"
+
     fi
 }
 
@@ -128,16 +154,23 @@ function wait_for_cpu_usage_and_ac {
 	if [ $CPU_LOW ==  0 ] && [ $AC == 0 ]; then
        	    break
 	else
-            sleep 1
+	    warn "AC: $AC, $CPU: $CPU_LOW. Deleying retry in $SLEEPTIME seconds"
+            sleep $SLEEPTIME
 	fi
     done
     return 0
 }
 
 function backup {
-    debug "starting backup of $SRC to $DST"
+    STARTDATE=$()
+    info "starting backup of $SRC to $DST"
     $RSYNC $DEFAULT_RSYNC_OPTS $RSYNC_OPTS  $SRC $DST
-    debug "backup finished"
+    BACKUP_SUCCESS=$?
+    if [ $BACKUP_SUCCESS -eq 0 ]; then
+	info "backup finished"
+    else
+	error_handler "something went wrong during backup"
+    fi
 }
 
 function main {   

@@ -17,6 +17,7 @@ Values from the global configuration can be overwritten with the local file.
 ```
 THREASHOLD=20
 VERBOSE=0
+SLEEPTIME=3
 
 # rsync options
 #
@@ -34,7 +35,7 @@ RSYNC_OPTS="-vc --exclude .cache --exclude [Cc]ache*/  --exclude *~ --exclude *.
 
 * THREASHOLD: threashold for overall cpu which needs to be reached before the backup starts
 * VERBOSE: 0 = Quiet, 1 = Warning, 2 = Debug. (Currently no warings implemented)
-
+* SLEEPTIME: time in seconds to wait until next retry if conditions are not fulfilled.
 * SRC: backup source
 * DST: backup destination
 * RSYNC_OPTS: additional options passed to rsync see ```man rsync``` for more details.
