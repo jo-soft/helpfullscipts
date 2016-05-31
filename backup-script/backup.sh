@@ -89,7 +89,7 @@ function info {
 	$LOGGER $LOGGER_OPTS "INFO: $MESSAGE"
     fi
     if [ $VERBOSE -ge 1 ]; then
-	MSGDATE=$($DATE +"%d-%m-%")
+	MSGDATE=$($DATE +"%d-%m-%Y")
 	echo $MSGDATE INFO: $MESSAGE
     fi
 }
