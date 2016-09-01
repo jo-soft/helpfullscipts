@@ -147,7 +147,7 @@ function ac_plugged_in {
 
 function wait_for_cpu_usage_and_ac {
     while true ; do
-	get_cpu_usage_below_threashold 20
+	get_cpu_usage_below_threashold $THREASHOLD
 	CPU_LOW=$?
 	ac_plugged_in
 	AC=$?
